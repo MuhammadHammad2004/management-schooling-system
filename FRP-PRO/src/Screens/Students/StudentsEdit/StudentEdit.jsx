@@ -1,0 +1,109 @@
+import React, { useState } from "react";
+import { Navbar } from "../../../Components/Navbar/Navbar";
+import RadioButtonsGroup from "../../../Components/RadioButto/RadioButton";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../../../Config/Config";
+import { useNavigate } from "react-router-dom";
+
+export const StudentEdit = () => {
+  const [newStudents, setnewStudents] = useState("");
+  const [newStudentslastName, setnewStudentsLastName] = useState("");
+  const [newStudentlastSchool, setnewStudentsLastSchool] = useState("");
+  const navigate = useNavigate();
+
+  const updatedFields = {
+    studentName: newStudents,
+    studentlastName: newStudentslastName,
+    studentLastSchool: newStudentlastSchool,
+  };
+
+  console.log(updatedFields);
+
+  const updateStudent = async (e) => {
+    e.preventDefault();
+
+    try {
+      const student = await setDoc(
+        doc(db, "StudentData", localStorage.getItem("studentID")),
+        updatedFields
+      );
+
+      navigate("/student-list");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  return (
+    <div>
+      <Navbar />
+      <section className=" w-full absolute top-10 flex flex-col items-center justify-center px-70 py-8  md:h-screen lg:py-0">
+        <div className="w-full py-10 px-30 bg-white rounded-2xl shadow-xl/30 ">
+          <form className="space-y-4 md:space-y-6" type="submit">
+            <h1 className="text-5xl text-blue-700 font-mono font-bold text-center uppercase">
+              Update Student Rigestration
+            </h1>
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">
+                Your Name
+              </label>
+              <input
+                type="text"
+                name="text"
+                id="text"
+                className="bg-gray-50  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Your Name"
+                required=""
+                onChange={(e) => {
+                  setnewStudents(e.target.value);
+                }}
+              />
+            </div>
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">
+                Last Name
+              </label>
+              <input
+                type="text"
+                name="text"
+                id="text"
+                placeholder="Last Name"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                required=""
+                onChange={(e) => {
+                  setnewStudentsLastName(e.target.value);
+                }}
+              />
+            </div>
+
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">
+                Last School
+              </label>
+              <input
+                type="text"
+                name="text"
+                id="text"
+                placeholder="ABC School"
+                className="bg-gray-50 border border-gray-300 text-black text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:border-gray-600 dark:placeholder-gray-400  dark:focus:border-blue-500"
+                required=""
+                onChange={(e) => {
+                  setnewStudentsLastSchool(e.target.value);
+                }}
+              />
+            </div>
+            <div>
+              <RadioButtonsGroup />
+            </div>
+            <button
+              onClick={updateStudent}
+              type="submit"
+              className="w-full text-black bg-primary-600 hover:bg-primary-700  hover:bg-red-500   hover:text-white focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+            >
+              Update Your Form
+            </button>
+          </form>
+        </div>
+      </section>
+    </div>
+  );
+};
